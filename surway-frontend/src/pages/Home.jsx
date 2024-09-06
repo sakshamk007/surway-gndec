@@ -1,12 +1,20 @@
-import React from 'react'
+import React from 'react';
+import { Typography, Button, Box } from '@mui/material';
 
 const Home = () => {
   return (
-    <div>
-      <h2>Welcome to Surway</h2>
-      <p>Create and manage surveys easily.</p>
-    </div>
-  )
-}
+    <Box sx={{ textAlign: 'center', marginTop: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        Welcome to Surway
+      </Typography>
+      <Typography variant="body1" paragraph>
+        Create and manage surveys easily.
+      </Typography>
+      <Button variant="contained" color="primary" href="/survey-builder">
+        Get Started
+      </Button>
+    </Box>
+  );
+};
 
-export default Home
+export default Home;

@@ -1,22 +1,33 @@
-import React from 'react';
-import './App.css'
-import { Outlet, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Outlet } from 'react-router-dom';
+import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
+import Navbar from './components/Navbar';
 
 const App = () => {
-  return (
-    <div>
-      <header>
-        <h1>Surway</h1>
-        <nav>
-          <Link to="/">Home</Link> | <Link to="/survey-builder">Survey Builder</Link>
-        </nav>
-      </header>
+  // State for dark mode
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
-      <main>
-        {/* This is where the routed components will be rendered */}
-        <Outlet />
-      </main>
-    </div>
+  // Function to toggle dark/light mode
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
+  // Create a theme based on the dark mode state
+  const theme = createTheme({
+    palette: {
+      mode: isDarkMode ? 'dark' : 'light',
+    },
+  });
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      {/* Navbar */}
+      <Navbar toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
+
+      {/* Page Content */}
+      <Outlet />
+    </ThemeProvider>
   );
 };
 

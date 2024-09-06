@@ -1,12 +1,20 @@
-import React from 'react'
+import React from 'react';
+import { Typography, Box, Button } from '@mui/material';
 
 const SurveyBuilder = () => {
   return (
-    <div>
-      <h1>Survey Builder</h1>
-      <p>This is the page where you can create and customize your survey.</p>
-    </div>
-  )
-}
+    <Box sx={{ marginTop: 4, textAlign: 'center' }}>
+      <Typography variant="h4" gutterBottom>
+        Survey Builder
+      </Typography>
+      <Typography variant="body1" paragraph>
+        Here you can build your survey!
+      </Typography>
+      <Button variant="contained" color="primary">
+        Create a New Survey
+      </Button>
+    </Box>
+  );
+};
 
-export default SurveyBuilder
+export default SurveyBuilder;
