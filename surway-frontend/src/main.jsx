@@ -15,9 +15,13 @@ const router = createBrowserRouter([
         path:'/',
         element:<Home/>
       },
+      // {
+      // path: '/survey-builder',
+      // element: <SurveyBuilder />
+      // },
       {
-      path: '/survey-builder',
-      element: <SurveyBuilder />
+        path: '/survey-builder/:id',
+        element: <SurveyBuilder />
       }
     ]
   }

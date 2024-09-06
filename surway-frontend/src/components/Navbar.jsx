@@ -3,7 +3,7 @@ import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListIt
 import { Menu as MenuIcon, Home as HomeIcon, AccountCircle as AccountIcon, ExitToApp as LogoutIcon, Brightness4 as BrightnessIcon } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
-const Navbar = ({ toggleDarkMode, isDarkMode }) => {
+const Navbar = ({ toggleDarkMode, isDarkMode, projectName }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Function to toggle the drawer
@@ -88,8 +88,14 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
 
           {/* Title */}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Surway
+            SURWAY-GNDEC
           </Typography>
+          {/* Show Project Name if it exists */}
+          {projectName && (
+            <Typography variant="h6" component="div">
+              {projectName}
+            </Typography>
+          )}
         </Toolbar>
       </AppBar>
 
