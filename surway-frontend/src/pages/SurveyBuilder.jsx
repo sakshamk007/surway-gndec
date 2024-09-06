@@ -36,7 +36,7 @@ const SurveyBuilder = () => {
       <ScrollableTabs />
 
       {/* Navbar Section */}
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', position: 'relative' }}>
         {/* Left Section */}
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Button
@@ -53,8 +53,6 @@ const SurveyBuilder = () => {
             PaperProps={{
               sx: {
                 width: 200,
-                mt: 1, // Adjust margin to align with the parent menu
-                ml: 1,
               },
             }}
           >
@@ -76,7 +74,8 @@ const SurveyBuilder = () => {
               PaperProps={{
                 sx: {
                   width: 200,
-                  mt: 2,
+                  mt: 1, // Adjust margin to align with the parent menu
+                  ml: 1, // Position the menu to the right of the parent menu
                 },
               }}
             >
