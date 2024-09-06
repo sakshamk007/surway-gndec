@@ -86,16 +86,18 @@ const Navbar = ({ toggleDarkMode, isDarkMode, projectName }) => {
             </IconButton>
           </Box>
 
-          {/* Title */}
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            SURWAY-GNDEC
-          </Typography>
+          
           {/* Show Project Name if it exists */}
           {projectName && (
             <Typography variant="h6" component="div">
               {projectName}
             </Typography>
           )}
+
+          {/* Title */}
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            SURWAY-GNDEC
+          </Typography>
         </Toolbar>
       </AppBar>
 

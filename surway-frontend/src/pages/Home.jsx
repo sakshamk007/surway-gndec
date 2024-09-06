@@ -1,30 +1,59 @@
 import React from 'react';
-import { Typography, Button, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { Box, Card, CardContent, Typography, Button } from '@mui/material';
+import FolderIcon from '@mui/icons-material/Folder';
 
 const Home = () => {
-    // Dummy projects list
-    const projects = [
-      { id: 1, name: 'Project A' },
-      { id: 2, name: 'Project B' },
-      { id: 3, name: 'Project C' },
-    ];
-  
+  // Dummy projects list
+  const projects = [
+    { id: 1, name: 'Project A', description: 'Survey for marketing analysis' },
+    { id: 2, name: 'Project B', description: 'Customer feedback survey' },
+    { id: 3, name: 'Project C', description: 'Employee satisfaction survey' },
+  ];
+
   return (
-    <Box sx={{ textAlign: 'center', marginTop: 4 }}>
+    <Box sx={{ p: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Welcome to Surway
+        My Projects
       </Typography>
-      <ul>
+
+      {/* Grid Container using Box */}
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+          gap: 3,
+        }}
+      >
         {projects.map((project) => (
-          <li key={project.id}>
-            <Link to={`/survey-builder/${project.id}`}>{project.name}</Link>
-          </li>
+          <Card key={project.id} elevation={3} sx={{ height: '100%' }}>
+            <CardContent>
+              {/* Icon and Project Name */}
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <FolderIcon sx={{ fontSize: 40, mr: 2, color: 'primary.main' }} />
+                <Typography variant="h6">{project.name}</Typography>
+              </Box>
+
+              {/* Project Description */}
+              <Typography variant="body2" color="textSecondary">
+                {project.description}
+              </Typography>
+
+              {/* Button to open Survey Builder */}
+              <Button
+                component={Link}
+                to={`/survey-builder/${project.id}`}
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ mt: 2 }}
+              >
+                Open Project
+              </Button>
+            </CardContent>
+          </Card>
         ))}
-      </ul>
-      <Button variant="contained" color="primary" href="/survey-builder">
-        Get Started
-      </Button>
+      </Box>
     </Box>
   );
 };
