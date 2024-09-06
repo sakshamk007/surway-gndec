@@ -1,18 +1,21 @@
 import React from 'react';
 import { Typography, Box, Button } from '@mui/material';
+import ScrollableTabs from '../components/ScrollableTabs';
 
 const SurveyBuilder = () => {
   return (
-    <Box sx={{ marginTop: 4, textAlign: 'center' }}>
-      <Typography variant="h4" gutterBottom>
-        Survey Builder
-      </Typography>
-      <Typography variant="body1" paragraph>
-        Here you can build your survey!
-      </Typography>
+    <Box sx={{textAlign: 'center' }}>
+      <ScrollableTabs />
+
+      <Box sx={{ p: 4 }}>
+        <Typography variant="h4">
+          Survey Builder
+        </Typography>
+      </Box>
       <Button variant="contained" color="primary">
         Create a New Survey
       </Button>
+      
     </Box>
   );
 };
