@@ -5,6 +5,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import SearchIcon from '@mui/icons-material/Search';
 import ScrollableTabs from '../components/ScrollableTabs';
 import Sidebar from '../components/Sidebar';
+import SurveyEditor from '../components/SurveyEditor';
 
 const SurveyBuilder = () => {
   const { id } = useParams();  // Get project ID from the URL
@@ -140,6 +141,9 @@ const SurveyBuilder = () => {
             </Button>
           </Box>
         </Toolbar>
+
+        {/* Survey Editor Section */}
+        <SurveyEditor />
       </Box>
     </Box>
   );
