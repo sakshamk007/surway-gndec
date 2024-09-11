@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Card, CardContent, Typography, Button, Modal, TextField, MenuItem } from '@mui/material';
-import FolderIcon from '@mui/icons-material/Folder';
+import { Box, Typography, Button, Modal, TextField, MenuItem } from '@mui/material';
+import axios from 'axios';
 
-// Dropdown options for starting a survey
 const surveyOptions = [
   { value: 'blank', label: 'Create a blank survey project' },
   { value: 'import_qsf', label: 'Import a QSF file' },
@@ -11,81 +10,146 @@ const surveyOptions = [
   { value: 'use_library', label: 'Use a survey from your library' },
 ];
 
-const Home = () => {
-  const [projects, setProjects] = useState([
-    { id: 1, name: 'Project A', description: 'Survey for marketing analysis' },
-    { id: 2, name: 'Project B', description: 'Customer feedback survey' },
-    { id: 3, name: 'Project C', description: 'Employee satisfaction survey' },
-  ]);
+const filterOptions = [
+  { value: 'all', label: 'All' },
+  { value: 'active', label: 'Active' },
+  { value: 'new', label: 'New' },
+  { value: 'closed', label: 'Closed' },
+];
 
+const Home = () => {
+  const [projects, setProjects] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filter, setFilter] = useState('all');
   const [openModal, setOpenModal] = useState(false);
   const [newProject, setNewProject] = useState({ name: '', folder: '', surveyType: '' });
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const response = await axios.get('http://localhost:5000/api/projects');
+      setProjects(response.data);
+    };
+    fetchProjects();
+  }, []);
 
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
-  const handleCreateProject = () => {
-    const newId = projects.length + 1;
+  const handleCreateProject = async () => {
     const newProjectObj = {
-      id: newId,
       name: newProject.name || 'Untitled Project',
-      description: `Folder: ${newProject.folder}, Survey Type: ${surveyOptions.find(option => option.value === newProject.surveyType)?.label}`,
+      status: 'New',
+      responses: 0,
+      lastModified: new Date().toISOString().split('T')[0],
+      creationDate: new Date().toISOString().split('T')[0],
     };
-    setProjects([...projects, newProjectObj]);
+    const response = await axios.post('http://localhost:5000/api/projects', newProjectObj);
+    setProjects([...projects, response.data]);
     handleCloseModal();
   };
 
+  const filteredProjects = projects.filter((project) => {
+    const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter = filter === 'all' || project.status.toLowerCase() === filter;
+    return matchesSearch && matchesFilter;
+  });
+
   return (
-    <Box sx={{ p: 4 }}>
-      {/* Header with 'My Projects' and 'Create Project' button */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h4" gutterBottom>
-          My Projects
-        </Typography>
-        <Button variant="contained" color="primary" onClick={handleOpenModal}>
-          Create Project
-        </Button>
+    <Box sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 2,
+          gap: { xs: 2, sm: 0 },
+        }}
+      >
+        <Typography variant="h4">My Projects</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+          <TextField
+            label="Search Projects"
+            variant="outlined"
+            size="small"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            sx={{ width: { xs: '100%', sm: 'auto' } }}
+          />
+          <TextField
+            select
+            label="Status"
+            variant="outlined"
+            size="small"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            sx={{
+              width: { xs: '100%', sm: 'auto' },
+              minWidth: '100px',
+            }}
+          >
+            {filterOptions.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <Button variant="contained" color="primary" onClick={handleOpenModal}>
+            Create Project
+          </Button>
+        </Box>
       </Box>
 
-      {/* Grid Container using Box */}
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-          gap: 3,
+          gridTemplateColumns: '4fr 1fr 1fr 1fr 1fr 1fr auto',
+          gap: 1,
+          p: 1,
+          bgcolor: 'primary.main',
+          color: 'white',
+          minHeight: '50px',
+          alignItems: 'center',
         }}
       >
-        {projects.map((project) => (
-          <Card key={project.id} elevation={3} sx={{ height: '100%' }}>
-            <CardContent>
-              {/* Icon and Project Name */}
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <FolderIcon sx={{ fontSize: 40, mr: 2, color: 'primary.main' }} />
-                <Typography variant="h6">{project.name}</Typography>
-              </Box>
-
-              {/* Project Description */}
-              <Typography variant="body2" color="textSecondary">
-                {project.description}
-              </Typography>
-
-              {/* Button to open Survey Builder */}
-              <Button
-                component={Link}
-                to={`/survey-builder/${project.id}`}
-                variant="contained"
-                color="primary"
-                fullWidth
-                sx={{ mt: 2 }}
-              >
-                Open Project
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
+        <Typography>Project Name</Typography>
+        <Typography>Status</Typography>
+        <Typography>Responses</Typography>
+        <Typography>Last Modified</Typography>
+        <Typography>Creation Date</Typography>
+        <Typography></Typography>
       </Box>
 
-      {/* Modal for creating a new project */}
+      {filteredProjects.map((project) => (
+        <Box
+          key={project.id}
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: '4fr 1fr 1fr 1fr 1fr 1fr auto',
+            gap: 1,
+            alignItems: 'center',
+            bgcolor: 'grey.200',
+            p: 1,
+            minHeight: '50px',
+          }}
+        >
+          <Typography>{project.name}</Typography>
+          <Typography>{project.status}</Typography>
+          <Typography>{project.responses}</Typography>
+          <Typography>{project.lastModified}</Typography>
+          <Typography>{project.creationDate}</Typography>
+          <Button
+            component={Link}
+            to={`/survey-builder/${project.id}`}
+            variant="contained"
+            color="primary"
+            sx={{ height: '30px', width: 'fit-content' }}
+          >
+            Open Project
+          </Button>
+        </Box>
+      ))}
+
       <Modal open={openModal} onClose={handleCloseModal}>
         <Box
           sx={{
@@ -93,9 +157,9 @@ const Home = () => {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 400,
+            width: { xs: '90%', sm: 400 },
             bgcolor: 'background.paper',
-            p: 4,
+            p: { xs: 2, sm: 4 },
             boxShadow: 24,
             borderRadius: 2,
           }}
@@ -104,7 +168,6 @@ const Home = () => {
             Create New Project
           </Typography>
 
-          {/* Separate label and input for Project Name */}
           <Typography variant="body1" gutterBottom>
             Project Name
           </Typography>
@@ -115,25 +178,10 @@ const Home = () => {
             value={newProject.name}
             onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
             InputProps={{
-              style: { backgroundColor: 'lightgray', color: 'black' }, // Background and font color
+              style: { backgroundColor: 'lightgray', color: 'black' },
             }}
           />
 
-          {/* Separate label and input for Folder */}
-          <Typography variant="body1" gutterBottom>
-            Folder
-          </Typography>
-          <TextField
-            fullWidth
-            sx={{ mb: 2 }}
-            value={newProject.folder}
-            onChange={(e) => setNewProject({ ...newProject, folder: e.target.value })}
-            InputProps={{
-              style: { backgroundColor: 'lightgray', color: 'black' }, // Background and font color
-            }}
-          />
-
-          {/* Separate label and input for Survey Type */}
           <Typography variant="body1" gutterBottom>
             How do you want to start the survey?
           </Typography>
@@ -144,7 +192,7 @@ const Home = () => {
             value={newProject.surveyType}
             onChange={(e) => setNewProject({ ...newProject, surveyType: e.target.value })}
             InputProps={{
-              style: { backgroundColor: 'lightgray', color: 'black' }, // Background and font color
+              style: { backgroundColor: 'lightgray', color: 'black' },
             }}
           >
             {surveyOptions.map((option) => (
@@ -154,7 +202,6 @@ const Home = () => {
             ))}
           </TextField>
 
-          {/* Create Button */}
           <Button variant="contained" color="primary" fullWidth onClick={handleCreateProject}>
             Create
           </Button>
