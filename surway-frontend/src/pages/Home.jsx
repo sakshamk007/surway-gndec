@@ -140,7 +140,8 @@ const Home = () => {
           <Typography>{project.creationDate}</Typography>
           <Button
             component={Link}
-            to={`/survey-builder/${project.id}`}
+            to={`/survey-builder/${project._id}`}
+            state={{ projectName: project.name }} 
             variant="contained"
             color="primary"
             sx={{ height: '30px', width: 'fit-content' }}
