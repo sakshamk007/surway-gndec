@@ -14,11 +14,11 @@ import RankOrderIcon from '@mui/icons-material/List';
 import SideBySideIcon from '@mui/icons-material/ViewColumn';
 import DisplayLogicIcon from '@mui/icons-material/Visibility';
 
-const Sidebar = () => {
+const Sidebar = ({ selectedQuestionType }) => {
   const [questionTypeAnchorEl, setQuestionTypeAnchorEl] = useState(null);
   const [contentTypeAnchorEl, setContentTypeAnchorEl] = useState(null);
   const [addRequirements, setAddRequirements] = useState(false);
-
+  
   // Open dropdowns
   const handleQuestionTypeClick = (event) => setQuestionTypeAnchorEl(event.currentTarget);
   const handleContentTypeClick = (event) => setContentTypeAnchorEl(event.currentTarget);
@@ -54,7 +54,7 @@ const Sidebar = () => {
         fullWidth
         sx={{ mt: 1 }}
       >
-        Select Question Type
+        {selectedQuestionType ? selectedQuestionType : 'Select Question Type'}
       </Button>
       <Menu
         anchorEl={questionTypeAnchorEl}
@@ -129,3 +129,54 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+
+// import React, { useState } from 'react';
+// import { Box, Typography, Button, Menu, MenuItem, FormControlLabel, Switch, RadioGroup, Radio } from '@mui/material';
+// import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+// import MultipleChoiceIcon from '@mui/icons-material/CheckBox';
+// import TextEntryIcon from '@mui/icons-material/TextFields';
+// import TextEntrySidebar from './TextEntrySidebar';  // Custom sidebar for TextEntry questions
+
+// const Sidebar = ({ questionType, onSettingsChange }) => {
+//   const [questionTypeAnchorEl, setQuestionTypeAnchorEl] = useState(null);
+
+//   const handleMenuClose = () => {
+//     setQuestionTypeAnchorEl(null);
+//   };
+
+//   return (
+//     <Box sx={{ width: 250, height: '100vh', padding: 2, borderRight: '1px solid lightgray' }}>
+//       <Typography variant="h6">Edit Question</Typography>
+
+//       {/* Render different sidebars based on the question type */}
+//       {questionType === 'text-entry' ? (
+//         <TextEntrySidebar onSettingsChange={onSettingsChange} />
+//       ) : (
+//         <>
+//           <Typography variant="subtitle1" fontWeight="bold" mt={2}>Question Type</Typography>
+//           <Button
+//             variant="outlined"
+//             endIcon={<ArrowDropDownIcon />}
+//             onClick={(event) => setQuestionTypeAnchorEl(event.currentTarget)}
+//             fullWidth
+//             sx={{ mt: 1 }}
+//           >
+//             Select Question Type
+//           </Button>
+//           <Menu
+//             anchorEl={questionTypeAnchorEl}
+//             open={Boolean(questionTypeAnchorEl)}
+//             onClose={handleMenuClose}
+//           >
+//             <MenuItem onClick={handleMenuClose}><MultipleChoiceIcon sx={{ mr: 1 }} /> Multiple Choice</MenuItem>
+//             <MenuItem onClick={handleMenuClose}><TextEntryIcon sx={{ mr: 1 }} /> Text Entry</MenuItem>
+//             {/* Add more menu items as needed */}
+//           </Menu>
+//         </>
+//       )}
+//     </Box>
+//   );
+// };
+
+// export default Sidebar;

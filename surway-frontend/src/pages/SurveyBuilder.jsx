@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Toolbar, Typography, Button, IconButton, Menu, MenuItem, TextField, Divider } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -12,7 +12,7 @@ const SurveyBuilder = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [toolsMenuOpen, setToolsMenuOpen] = React.useState(false);
   const [importExportAnchorEl, setImportExportAnchorEl] = React.useState(null);
-
+  const [selectedQuestion, setSelectedQuestion] = useState(null);
   const handleToolsClick = (event) => {
     setAnchorEl(event.currentTarget);
     setToolsMenuOpen(true);
@@ -31,11 +31,13 @@ const SurveyBuilder = () => {
   const handleImportExportClose = () => {
     setImportExportAnchorEl(null);
   };
-
+  const handleQuestionSelect = (question) => {
+    setSelectedQuestion(question);
+  };
   return (
     <Box sx={{ display: 'flex' }}>
       {/* Sidebar Section */}
-      <Sidebar />
+      <Sidebar selectedQuestionType={selectedQuestion?.questionType} />
 
       {/* Main Content Section */}
       <Box sx={{ flexGrow: 1 }}>
@@ -143,7 +145,7 @@ const SurveyBuilder = () => {
         </Toolbar>
 
         {/* Survey Editor Section */}
-        <SurveyEditor />
+        <SurveyEditor onQuestionSelect={handleQuestionSelect}/>
       </Box>
     </Box>
   );

@@ -26,13 +26,19 @@ import DnsOutlinedIcon from '@mui/icons-material/DnsOutlined';
 import RankOrderIcon from '@mui/icons-material/List';
 import SideBySideIcon from '@mui/icons-material/ViewColumn';
 
-const SurveyEditor = () => {
+import TextEntry from './TextEntry';
+import Sidebar from './Sidebar';
+const SurveyEditor = ({ onQuestionSelect }) => {
   const [expanded, setExpanded] = useState(true);
   const [blockMenuAnchorEl, setBlockMenuAnchorEl] = useState(null);
   const [questionMenuAnchorEls, setQuestionMenuAnchorEls] = useState({});
   const [questions, setQuestions] = useState([{ id: 1, questionText: "", options: [""] }]);
   const [addQuestionAnchorEl, setAddQuestionAnchorEl] = useState(null);
-
+  const [settings, setSettings] = useState({
+    inputType: 'single-line',
+    characterLimit: 0,
+    validationType: 'none',
+  });
   // Toggle block expansion
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -49,7 +55,7 @@ const SurveyEditor = () => {
 
   // Add a new question (default, will be updated when selecting type)
   const addNewQuestion = (questionType) => {
-    const newQuestion = { id: questions.length + 1, questionText: questionType, options: [""] };
+    const newQuestion = { id: questions.length + 1, questionType, questionText: "", options: [""] };
     setQuestions([...questions, newQuestion]);
     setAddQuestionAnchorEl(null);  // Close the dropdown after adding a question
   };
@@ -79,6 +85,10 @@ const SurveyEditor = () => {
   const handleAddQuestionClose = () => {
     setAddQuestionAnchorEl(null);
   };
+  const handleBoxClick = (question) => {
+    // Trigger the parent callback with the selected question
+    onQuestionSelect(question);
+  };
 
   // Delete question
   const deleteQuestion = (questionId) => {
@@ -86,6 +96,13 @@ const SurveyEditor = () => {
     handleQuestionMenuClose(questionId);
   };
 
+  // Handle settings change for TextEntry
+  const handleSettingsChange = (newSettings) => {
+    setSettings((prevSettings) => ({
+      ...prevSettings,
+      ...newSettings,
+    }));
+  };
   return (
     <Grid container spacing={2} sx={{ padding: 2 }}>
       {/* Main Card Block */}
@@ -141,20 +158,16 @@ const SurveyEditor = () => {
                     borderColor="grey.400"
                     borderRadius={1}
                     position="relative"
+                    onClick={() => handleBoxClick(question)} 
+                    sx={{ cursor: 'pointer' }}
                   >
-                    <Grid container justifyContent="space-between" alignItems="center">
-                      {/* Question Text Input */}
-                      <Grid item xs={11}>
-                        <TextField
-                          fullWidth
-                          label={`Question ${qIndex + 1}`}
-                          variant="outlined"
-                          value={question.questionText}
-                          onChange={(e) => handleQuestionTextChange(question.id, e.target.value)}
-                        />
+                    <Grid container justifyContent="space-between" alignItems="flex-start">
+                      {/* Question Label in the Top Left */}
+                      <Grid item>
+                        <Typography variant="body1">{`Q${qIndex + 1}`}</Typography>
                       </Grid>
 
-                      {/* 3 Dots Menu for Question Options */}
+                      {/* 3 Dots Menu for Question Options in the Top Right */}
                       <Grid item>
                         <IconButton
                           onClick={(e) => handleQuestionMenuClick(e, question.id)}
@@ -179,6 +192,31 @@ const SurveyEditor = () => {
                             Delete
                           </MenuItem>
                         </Menu>
+                      </Grid>
+
+                      {/* Question Input Area */}
+                      <Grid item xs={12}>
+                        {question.questionType === "Text Entry" ? (
+                          <Box sx={{ padding: 2 }}>
+                            {/* Render TextEntry for "Text Entry" questions */}
+                            <TextEntry settings={settings} />
+                          </Box>
+                        ) : (
+                          <TextField
+                            fullWidth
+                            label={`Question ${qIndex + 1}`}
+                            variant="outlined"
+                            value={question.questionText}
+                            onChange={(e) => handleQuestionTextChange(question.id, e.target.value)}
+                            sx={{
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: 'red',
+                                },
+                              },
+                            }}
+                          />
+                        )}
                       </Grid>
                     </Grid>
                   </Box>
@@ -253,6 +291,7 @@ const SurveyEditor = () => {
                 </Grid>
               </Box>
             </Collapse>
+
           </CardContent>
         </Card>
       </Grid>

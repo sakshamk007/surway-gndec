@@ -8,7 +8,7 @@ const App = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const { id } = useParams();
   const location = useLocation();
-  const projectName = location.state?.projectName || 'Untitled Project';
+  const projectName = location.state?.projectName || '';
 
   // Function to toggle dark/light mode
   const toggleDarkMode = () => {
