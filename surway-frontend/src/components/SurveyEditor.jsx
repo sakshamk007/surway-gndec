@@ -28,7 +28,7 @@ import SideBySideIcon from '@mui/icons-material/ViewColumn';
 
 import TextEntry from './TextEntry';
 import Sidebar from './Sidebar';
-const SurveyEditor = ({ onQuestionSelect }) => {
+const SurveyEditor = ({ selectedQuestion,onQuestionSelect,onNewQuestionAdded }) => {
   const [expanded, setExpanded] = useState(true);
   const [blockMenuAnchorEl, setBlockMenuAnchorEl] = useState(null);
   const [questionMenuAnchorEls, setQuestionMenuAnchorEls] = useState({});
@@ -57,6 +57,7 @@ const SurveyEditor = ({ onQuestionSelect }) => {
   const addNewQuestion = (questionType) => {
     const newQuestion = { id: questions.length + 1, questionType, questionText: "", options: [""] };
     setQuestions([...questions, newQuestion]);
+    onNewQuestionAdded(newQuestion);
     setAddQuestionAnchorEl(null);  // Close the dropdown after adding a question
   };
 
@@ -154,8 +155,8 @@ const SurveyEditor = ({ onQuestionSelect }) => {
                     key={question.id}
                     mb={2}
                     p={2}
-                    border={1}
-                    borderColor="grey.400"
+                    border={2}
+                    borderColor={selectedQuestion?.id === question.id ? 'lightblue' : 'grey.400'}
                     borderRadius={1}
                     position="relative"
                     onClick={() => handleBoxClick(question)} 

@@ -34,6 +34,10 @@ const SurveyBuilder = () => {
   const handleQuestionSelect = (question) => {
     setSelectedQuestion(question);
   };
+  // Handle adding a new question and selecting it by default
+  const handleNewQuestionAdded = (newQuestion) => {
+    setSelectedQuestion(newQuestion); // Set the new question as the selected one
+  };
   return (
     <Box sx={{ display: 'flex' }}>
       {/* Sidebar Section */}
@@ -145,8 +149,11 @@ const SurveyBuilder = () => {
         </Toolbar>
 
         {/* Survey Editor Section */}
-        <SurveyEditor onQuestionSelect={handleQuestionSelect}/>
-      </Box>
+        <SurveyEditor 
+        selectedQuestion={selectedQuestion} 
+        onQuestionSelect={setSelectedQuestion} 
+        onNewQuestionAdded={handleNewQuestionAdded}
+      />      </Box>
     </Box>
   );
 };
