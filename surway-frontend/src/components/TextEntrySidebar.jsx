@@ -7,7 +7,7 @@ const TextEntrySidebar = ({ onSettingsChange }) => {
   const [characterLimit, setCharacterLimit] = useState(0);
   const [validationType, setValidationType] = useState('');
   const [addValidation, setAddValidation] = useState(false);
-
+  const [addRequirements, setAddRequirements] = useState(false);
   const handleInputTypeChange = (event) => {
     const newInputType = event.target.value;
     setInputType(newInputType);
@@ -27,15 +27,15 @@ const TextEntrySidebar = ({ onSettingsChange }) => {
   };
 
   return (
-    <Box
-      sx={{
-        width: 250,
-        height: '100vh',
-        padding: 2,
-        borderRight: '1px solid lightgray',
-      }}
+    <Box sx={{mt: 2}}
+      // sx={{
+      //   width: 250,
+      //   height: '100vh',
+      //   padding: 2,
+      //   borderRight: '1px solid lightgray',
+      // }}
     >
-      <Typography variant="h6">Text Entry Settings</Typography>
+      {/* <Typography variant="h6">Text Entry Settings</Typography> */}
 
       {/* Input Type */}
       <Typography variant="subtitle1" fontWeight="bold" mt={2}>
@@ -82,6 +82,18 @@ const TextEntrySidebar = ({ onSettingsChange }) => {
           <FormControlLabel value="none" control={<Radio />} label="No Validation" />
         </RadioGroup>
       )}
+      <Typography variant="subtitle1" fontWeight="bold" mt={2}>
+        Response Requirements
+      </Typography>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={addRequirements}
+            onChange={() => setAddRequirements(!addRequirements)}
+          />
+        }
+        label="Add Requirements"
+      />
     </Box>
   );
 };
