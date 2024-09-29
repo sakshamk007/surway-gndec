@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Typography, Button, Modal, TextField, MenuItem } from '@mui/material';
+import { Box, Typography, Button, Modal, TextField, MenuItem, Snackbar, Alert } from '@mui/material';
 import axios from 'axios';
-
-const surveyOptions = [
-  { value: 'blank', label: 'Create a blank survey project' },
-  { value: 'import_qsf', label: 'Import a QSF file' },
-  { value: 'copy_existing', label: 'Copy a survey from an existing project' },
-  { value: 'use_library', label: 'Use a survey from your library' },
-];
 
 const filterOptions = [
   { value: 'all', label: 'All' },
@@ -22,37 +15,60 @@ const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState('all');
   const [openModal, setOpenModal] = useState(false);
-  const [newProject, setNewProject] = useState({ name: '', folder: '', surveyType: '' });
+  const [newProject, setNewProject] = useState({ name: '' });
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   useEffect(() => {
     const fetchProjects = async () => {
-      const response = await axios.get('http://localhost:5000/api/projects');
-      setProjects(response.data);
+      try {
+        const response = await axios.get('http://localhost:5000/api/projects');
+        setProjects(response.data);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+        setSnackbarMessage('Failed to fetch projects');
+        setSnackbarOpen(true);
+      }
     };
     fetchProjects();
-  }, []);
+  }, [newProject]);
 
   const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setNewProject({ name: '' }); // Reset new project state
+  };
 
   const handleCreateProject = async () => {
+    if (!newProject.name.trim()) {
+      setSnackbarMessage('Project name cannot be empty');
+      setSnackbarOpen(true);
+      return;
+    }
+
     const newProjectObj = {
       name: newProject.name || 'Untitled Project',
-      status: 'New',
-      responses: 0,
-      lastModified: new Date().toISOString().split('T')[0],
-      creationDate: new Date().toISOString().split('T')[0],
     };
-    const response = await axios.post('http://localhost:5000/api/projects', newProjectObj);
-    setProjects([...projects, response.data]);
-    handleCloseModal();
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/projects', newProjectObj);
+      setProjects([...projects, response.data]);
+      handleCloseModal();
+      setSnackbarMessage('Project created successfully');
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error creating project:", error);
+      setSnackbarMessage('Failed to create project');
+      setSnackbarOpen(true);
+    }
   };
 
   const filteredProjects = projects.filter((project) => {
-    const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = filter === 'all' || project.status.toLowerCase() === filter;
+    const matchesSearch = project.name?.toLowerCase().includes(searchQuery.toLowerCase()) || false;
+    const matchesFilter = filter === 'all' || project.status?.toLowerCase() === filter || false;
     return matchesSearch && matchesFilter;
   });
+
 
   return (
     <Box sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
@@ -141,7 +157,7 @@ const Home = () => {
           <Button
             component={Link}
             to={`/survey-builder/${project._id}`}
-            state={{ projectName: project.name }} 
+            state={{ projectName: project.name }}
             variant="contained"
             color="primary"
             sx={{ height: '30px', width: 'fit-content' }}
@@ -183,31 +199,17 @@ const Home = () => {
             }}
           />
 
-          <Typography variant="body1" gutterBottom>
-            How do you want to start the survey?
-          </Typography>
-          <TextField
-            select
-            fullWidth
-            sx={{ mb: 2 }}
-            value={newProject.surveyType}
-            onChange={(e) => setNewProject({ ...newProject, surveyType: e.target.value })}
-            InputProps={{
-              style: { backgroundColor: 'lightgray', color: 'black' },
-            }}
-          >
-            {surveyOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-
           <Button variant="contained" color="primary" fullWidth onClick={handleCreateProject}>
             Create
           </Button>
         </Box>
       </Modal>
+
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)}>
+        <Alert onClose={() => setSnackbarOpen(false)} severity="info" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
