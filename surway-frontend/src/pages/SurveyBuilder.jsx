@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Toolbar, Typography, Button, IconButton, Menu, MenuItem, TextField, Divider } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -13,6 +13,7 @@ const SurveyBuilder = () => {
   const [toolsMenuOpen, setToolsMenuOpen] = React.useState(false);
   const [importExportAnchorEl, setImportExportAnchorEl] = React.useState(null);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
+  
   const handleToolsClick = (event) => {
     setAnchorEl(event.currentTarget);
     setToolsMenuOpen(true);
@@ -31,20 +32,38 @@ const SurveyBuilder = () => {
   const handleImportExportClose = () => {
     setImportExportAnchorEl(null);
   };
+
   const handleQuestionSelect = (question) => {
     setSelectedQuestion(question);
   };
+
   // Handle adding a new question and selecting it by default
   const handleNewQuestionAdded = (newQuestion) => {
     setSelectedQuestion(newQuestion); // Set the new question as the selected one
   };
+
+  const [mcqsettings, mcqsetSettings] = useState({
+    answerType: 'one-answer',
+    choices: 2
+  });
+
+  const handlemcqSettingsChange = (newSettings) => {
+    mcqsetSettings((prev) => ({
+      ...prev,
+      ...newSettings,
+    }));
+  };
+
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', height: '100vh' }}>
       {/* Sidebar Section */}
-      <Sidebar selectedQuestionType={selectedQuestion?.questionType} />
+      <Sidebar 
+        selectedQuestionType={selectedQuestion?.questionType} 
+        handlemcqSettingsChange={handlemcqSettingsChange}
+      />
 
       {/* Main Content Section */}
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
         {/* Scrollable Tabs */}
         <ScrollableTabs />
 
@@ -115,7 +134,6 @@ const SurveyBuilder = () => {
             >
               <Typography variant="body2">Draft</Typography>
             </Box>
-
           </Box>
 
           {/* Right Section */}
@@ -148,12 +166,22 @@ const SurveyBuilder = () => {
           </Box>
         </Toolbar>
 
-        {/* Survey Editor Section */}
-        <SurveyEditor 
-        selectedQuestion={selectedQuestion} 
-        onQuestionSelect={setSelectedQuestion} 
-        onNewQuestionAdded={handleNewQuestionAdded}
-      />      </Box>
+        {/* Survey Editor Section with Overflow Handling */}
+        <Box 
+          sx={{ 
+            flexGrow: 1, 
+            overflowY: 'auto', // Allow vertical scrolling
+            overflowX: 'hidden' // Prevent horizontal scrolling
+          }} 
+        >
+          <SurveyEditor 
+            selectedQuestion={selectedQuestion} 
+            onQuestionSelect={setSelectedQuestion} 
+            onNewQuestionAdded={handleNewQuestionAdded}
+            mcqsettings={mcqsettings}
+          />
+        </Box>
+      </Box>
     </Box>
   );
 };

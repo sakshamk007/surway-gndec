@@ -27,8 +27,11 @@ import RankOrderIcon from '@mui/icons-material/List';
 import SideBySideIcon from '@mui/icons-material/ViewColumn';
 
 import TextEntry from './TextEntry';
+import MultipleChoice from './MultipleChoice';
+import FormField from './FormField';
+import TextGraphic from './TextGraphic';
 import Sidebar from './Sidebar';
-const SurveyEditor = ({ selectedQuestion,onQuestionSelect,onNewQuestionAdded }) => {
+const SurveyEditor = ({ selectedQuestion,onQuestionSelect,onNewQuestionAdded, mcqsettings, handlemcqSettingsChange }) => {
   const [expanded, setExpanded] = useState(true);
   const [blockMenuAnchorEl, setBlockMenuAnchorEl] = useState(null);
   const [questionMenuAnchorEls, setQuestionMenuAnchorEls] = useState({});
@@ -198,22 +201,23 @@ const SurveyEditor = ({ selectedQuestion,onQuestionSelect,onNewQuestionAdded }) 
                       {/* Question Input Area */}
                       <Grid item xs={12}>
                         {question.questionType === "Text Entry" ? (
-                          <Box sx={{ padding: 2 }}>
-                            {/* Render TextEntry for "Text Entry" questions */}
-                            <TextEntry settings={settings} />
-                          </Box>
+                          <TextEntry settings={settings} />
+                        ) : question.questionType === "Multiple Choice" ? (
+                          <MultipleChoice mcqsettings={mcqsettings} onmcqSettingsChange={handlemcqSettingsChange} />
+                        ) : question.questionType === "Text / Graphic" ? (
+                          <TextGraphic />
+                        ) : question.questionType === "Form Field" ? (
+                          <FormField />
                         ) : (
                           <TextField
                             fullWidth
                             label={`Question ${qIndex + 1}`}
                             variant="outlined"
                             value={question.questionText}
-                            onChange={(e) => handleQuestionTextChange(question.id, e.target.value)}
+                            onChange={(e) => handleQuestionTextChange({ ...question, questionText: e.target.value })}
                             sx={{
                               '& .MuiOutlinedInput-root': {
-                                '& fieldset': {
-                                  borderColor: 'red',
-                                },
+                                '& fieldset': { borderColor: 'red' },
                               },
                             }}
                           />
