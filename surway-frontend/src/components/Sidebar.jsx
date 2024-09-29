@@ -17,7 +17,7 @@ import DisplayLogicIcon from '@mui/icons-material/Visibility';
 import TextEntrySidebar from './TextEntrySidebar';
 import MultipleChoiceSidebar from './MultipleChoiceSidebar';
 
-const Sidebar = ({ selectedQuestionType }) => {
+const Sidebar = ({ selectedQuestionType, handlemcqSettingsChange }) => {
   const [questionTypeAnchorEl, setQuestionTypeAnchorEl] = useState(null);
   const [contentTypeAnchorEl, setContentTypeAnchorEl] = useState(null);
   const [addRequirements, setAddRequirements] = useState(false);
@@ -36,7 +36,11 @@ const Sidebar = ({ selectedQuestionType }) => {
       case 'Text Entry':
         return <TextEntrySidebar />;
       case 'Multiple Choice':
-        return <MultipleChoiceSidebar />;
+        return <MultipleChoiceSidebar onmcqSettingsChange={handlemcqSettingsChange} />;
+      case 'Text / Graphic':
+        return <TextGraphicSidebar />;
+      case 'Form Field':
+        return <FormFieldSidebar />;
       // Add more cases for different question types
       default:
         return null; // Fallback for unknown types
