@@ -8,7 +8,7 @@ require('dotenv').config();
 
 const db = async () => {
   try {
-    const URI = process.env.DATABASE;
+    const URI = process.env.DATABASE_URI;
     await mongoose.connect(URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,

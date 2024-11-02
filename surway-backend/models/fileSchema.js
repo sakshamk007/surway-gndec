@@ -31,4 +31,4 @@ projectSchema.pre('save', function (next) {
     next();
 });
 
-module.exports = mongoose.model('File', projectSchema);
+module.exports = mongoose.model('surveys', projectSchema);

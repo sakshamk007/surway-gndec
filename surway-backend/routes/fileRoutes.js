@@ -1,13 +1,13 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator'); // Use require for validation
-const File = require('../models/fileSchema.js');
+const surveys = require('../models/fileSchema.js');
 
 const router = express.Router();
 
 // GET all projects
 router.get('/projects', async (req, res) => {
     try {
-        const projects = await File.find();
+        const projects = await surveys.find();
 
         // Function to format dates
         const formatDate = (date) => {
@@ -53,7 +53,7 @@ router.post(
 
         try {
             // Create a new project instance
-            const newProject = new File({
+            const newProject = new surveys({
                 name
             });
 
@@ -87,7 +87,7 @@ router.put('/projects/:id',
 
         try {
             // Find the project by ID and update status and lastModified date
-            const updatedProject = await File.findByIdAndUpdate(
+            const updatedProject = await surveys.findByIdAndUpdate(
                 projectId,
                 {
                     status,
